@@ -2,7 +2,7 @@
 
 Status: design specification, 14 October 2026. Not implemented or benchmarked.
 Tracks [issue 1](https://github.com/PolBarreiro/pose-independent-cloud-vr/issues/1).
-The existing proposal license is unchanged. This document does not select a code license.
+The existing proposal license is unchanged. This document remains CC BY-NC-ND 4.0; prototype code under `prototype/` is covered by [MIT](../LICENSE-CODE), as authorized by Pol on 14 October 2026.
 
 ## Scope
 
@@ -127,9 +127,7 @@ A question suitable for a community discussion channel that permits it (not post
 > Scope and checklist: https://github.com/PolBarreiro/pose-independent-cloud-vr/issues/1.
 > This is a proposal-stage project; we have no verified headset results yet.
 
-Before publishing implementation with a chosen license or accepting external code, Pol must select a separate code license.
-Recommendation for the small prototype: MIT for straightforward reuse, while leaving proposal documents under CC BY-NC-ND 4.0.
-Apache-2.0 is an alternative if an explicit patent grant is preferred. No license is being applied by this recommendation.
+Pol authorized MIT for original prototype code on 14 October 2026. Place implementation, tests and build files under `prototype/`, covered by [LICENSE-CODE](../LICENSE-CODE). The README and proposal documentation remain CC BY-NC-ND 4.0. Code contributions must be offered under MIT; preserve third-party license notices.
 
 ## Progress log — 14 October 2026
 
@@ -138,4 +136,4 @@ Apache-2.0 is an alternative if an explicit patent grant is preferred. No licens
 - Inspected a fresh repository checkout; no AGENTS.md or CONTRIBUTING instructions were present in that checkout.
 - Defined snapshot/input contract, reconnect semantics, bounded delay simulation and measurement constraints.
 - Reviewed ALVR contribution policy; no third-party outreach sent today.
-- Next: implement snapshot validation/recovery locally and test the acceptance scenarios; decide code license before publishing implementation.
+- Next: implement snapshot validation/recovery locally and test the acceptance scenarios; publish tested implementation under the now-approved MIT code license.
