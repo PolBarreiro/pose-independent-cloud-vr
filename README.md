@@ -56,7 +56,7 @@ Help is welcome with WebXR/OpenXR clients, streaming and codecs, dynamic Gaussia
 
 A daily project task is scheduled for 10:00 Asia/Bangkok to check feedback and attempt one small, verifiable development, research or community step. Meaningful progress and blockers should be recorded on GitHub. Outreach will use relevant community channels and respect their rules; it will not repeatedly message people who do not respond. A useful NVIDIA reply informs the work rather than ending the prototype effort.
 
-The proposal retains its existing CC BY-NC-ND 4.0 license. Before accepting code contributions, a separate code license needs to be selected; this proposal license does not provide open-source modification rights.
+The README and proposal documentation retain CC BY-NC-ND 4.0. On 14 October 2026, Pol authorized MIT for the prototype implementation; see the scope below.
 
 ## Author
 
@@ -64,6 +64,18 @@ Pol Barreiro Font, polbarreirofont@gmail.com. First published 22 September 2026.
 
 ## License
 
-© 2026 Pol Barreiro Font. Licensed under [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International](https://creativecommons.org/licenses/by-nc-nd/4.0/) (CC BY-NC-ND 4.0). See [LICENSE](LICENSE).
+© 2026 Pol Barreiro Font.
 
-You may share this work with attribution, for non-commercial purposes, without modifications. For commercial use or any other permission, contact the author.
+| Material | License |
+| --- | --- |
+| This README, proposal documents and other files under `docs/` | [CC BY-NC-ND 4.0](LICENSE) |
+| Original prototype source code, tests and build/configuration files placed under `prototype/` | [MIT](LICENSE-CODE) |
+| Third-party code or assets | Their own accompanying licenses and notices |
+
+Files outside `prototype/` remain under CC BY-NC-ND 4.0 unless explicitly marked otherwise. The MIT license does not relicense this README or the proposal documents.
+
+Under CC BY-NC-ND 4.0, you may share the documentation with attribution for non-commercial purposes, but may not distribute modified versions. Contact the author for additional permissions.
+
+MIT permits modification, redistribution and commercial use of the covered prototype code, with its copyright and permission notice retained. The documentation's non-commercial and no-derivatives restrictions do not apply to that MIT code.
+
+Code contributions to `prototype/` must be offered under MIT, with contributors retaining copyright in their own work. Third-party dependencies must retain their original notices and compatible terms. No playable implementation is claimed by adding this license.
