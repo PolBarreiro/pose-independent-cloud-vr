@@ -5,7 +5,7 @@ Requires Node.js 20 or later. No packages or services are needed.
 
 Run from repository root:
 
-    node --test prototype/snapshot.test.mjs prototype/scene.test.mjs
+    node --test prototype/snapshot.test.mjs prototype/scene.test.mjs prototype/input.test.mjs
     node prototype/simulate.mjs
 
 snapshot.mjs validates full JSON snapshots and maintains the latest scene.
@@ -34,3 +34,16 @@ action deduplication, acknowledgment and reset across reconnects.
 No WebSocket transport, renderer, headset controller or scheduled reconnect is
 implemented. No bandwidth, display latency or comfort measurements are claimed.
 Next step: connect these components to a local transport and desktop rendering.
+
+## Input tracking — verified 2026-10-18
+
+All 17 tests passed on Node v24.19.0. InputTracker enforces one pending action,
+blocks retry after an unknown outcome and resolves a late matching acknowledgment.
+Connect it only after the new connection baseline is accepted; pass acknowledgments
+only from snapshots actually applied by SnapshotReceiver. Ignore old transport
+callbacks using the receiver generation token. Call status() each UI update to
+evaluate timeouts. Disconnect discards pending data without replay; a fresh
+connection resets numbering. Store the unknown outcome in the UI if a persistent
+history is needed. Response duration uses the client clock; it is not a hardware
+latency measurement. Transport, rendering and headset tests remain pending.
+
