@@ -19,8 +19,7 @@ scene.mjs supplies a single-client scene authority with caller-driven monotonic
 time, a moving cube, toggle-motion inputs, deduplication and acknowledgments.
 Each new authority requires a unique server session ID. connect() resets only
 connection input tracking, preserving the simulated world. Do not automatically
-replay unacknowledged inputs after reconnect. The caller must enforce one pending
-input at a time; client-side input timeout/UI handling is not implemented.
+replay unacknowledged inputs after reconnect. InputTracker enforces one pending action and detects unknown outcomes. UI handling is not implemented.
 
 Verified 2026-10-16 on Windows, Node v24.19.0: all 12 tests passed.
 The deterministic simulation delivered 55 snapshots, deliberately skipped 6,
@@ -46,4 +45,3 @@ evaluate timeouts. Disconnect discards pending data without replay; a fresh
 connection resets numbering. Store the unknown outcome in the UI if a persistent
 history is needed. Response duration uses the client clock; it is not a hardware
 latency measurement. Transport, rendering and headset tests remain pending.
-
