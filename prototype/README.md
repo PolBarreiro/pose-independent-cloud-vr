@@ -5,7 +5,7 @@ Requires Node.js 20 or later. No packages or services are needed.
 
 Run from repository root:
 
-    node --test prototype/snapshot.test.mjs prototype/scene.test.mjs prototype/input.test.mjs
+    node --test prototype/snapshot.test.mjs prototype/scene.test.mjs prototype/input.test.mjs prototype/transport.test.mjs
     node prototype/simulate.mjs
 
 snapshot.mjs validates full JSON snapshots and maintains the latest scene.
@@ -45,3 +45,20 @@ evaluate timeouts. Disconnect discards pending data without replay; a fresh
 connection resets numbering. Store the unknown outcome in the UI if a persistent
 history is needed. Response duration uses the client clock; it is not a hardware
 latency measurement. Transport, rendering and headset tests remain pending.
+
+## Local TCP adapter — verified 2026-10-19
+
+transport.mjs exports createSceneServer(). Await listen() for an ephemeral port
+on 127.0.0.1 only, then await close() to stop it. It accepts one TCP client,
+sends complete newline-delimited JSON snapshots at a requested 30 Hz timer
+cadence, and accepts newline-delimited toggle input. This is not WebSocket
+and cannot be used directly by browser/headset clients. No authentication or
+encryption is provided: do not expose or forward this adapter outside loopback.
+
+All 19 tests passed on Windows, Node v24.19.0. The integration suite uses real
+loopback sockets, SnapshotReceiver and InputTracker, and checks fragmented
+input acknowledgment plus recovery after malformed/oversized client input.
+Input buffering and queued output are bounded; slow output clients disconnect.
+No actual 30 Hz performance guarantee or WAN/hardware latency is claimed.
+No persistent service is started by the test suite. Desktop rendering,
+WebSocket transport, automated reconnect and headset testing remain pending.
