@@ -32,7 +32,7 @@ action deduplication, acknowledgment and reset across reconnects.
 
 No WebSocket transport, renderer, headset controller or scheduled reconnect is
 implemented. No bandwidth, display latency or comfort measurements are claimed.
-Next step: connect these components to a local transport and desktop rendering.
+Local TCP transport is now available below; desktop rendering remains pending.
 
 ## Input tracking — verified 2026-10-18
 
@@ -44,7 +44,7 @@ callbacks using the receiver generation token. Call status() each UI update to
 evaluate timeouts. Disconnect discards pending data without replay; a fresh
 connection resets numbering. Store the unknown outcome in the UI if a persistent
 history is needed. Response duration uses the client clock; it is not a hardware
-latency measurement. Transport, rendering and headset tests remain pending.
+latency measurement. Browser transport, rendering and headset tests remain pending.
 
 ## Local TCP adapter — verified 2026-10-19
 
