@@ -5,7 +5,7 @@ Requires Node.js 20 or later. No packages or services are needed.
 
 Run from repository root:
 
-    node --test prototype/snapshot.test.mjs prototype/scene.test.mjs prototype/input.test.mjs prototype/transport.test.mjs
+    node --test prototype/snapshot.test.mjs prototype/scene.test.mjs prototype/input.test.mjs prototype/transport.test.mjs prototype/delay.test.mjs
     node prototype/simulate.mjs
 
 snapshot.mjs validates full JSON snapshots and maintains the latest scene.
@@ -62,3 +62,18 @@ Input buffering and queued output are bounded; slow output clients disconnect.
 No actual 30 Hz performance guarantee or WAN/hardware latency is claimed.
 No persistent service is started by the test suite. Desktop rendering,
 WebSocket transport, automated reconnect and headset testing remain pending.
+
+## Delivery delay simulation — verified 2026-10-20
+
+SnapshotDelay in delay.mjs queues UTF-8 snapshot strings with configurable delayMs,
+jitterMs, dropRate and seed. Enqueue after parsing/validation; drain with client
+monotonic time, then apply through SnapshotReceiver. Clear at disconnect and
+retain transport generation checks. Default queue capacity is 16 snapshots;
+overflow discards oldest arrivals. stats() separates random drops from superseded
+updates. deliveryDelayMs includes time until the caller drains the queue.
+
+All 24 tests passed on Node v24.19.0, including 0/50/100 ms boundaries, seeded
+reproducibility, bounded queues, disconnect clearing and receiver integration.
+This is application delivery simulation, not TCP packet loss or WAN emulation.
+It does not schedule or delay local rendering. Browser adapter, visible desktop
+scene and hardware tests remain pending.
