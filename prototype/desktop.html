@@ -1,0 +1,13 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: MIT -->
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>XcloudVR local scene experiment</title>
+<style>body{background:#101824;color:#eef;font:18px system-ui;max-width:900px;margin:32px auto;padding:16px}canvas{width:100%;background:#19263a}button,select{font:inherit;padding:8px}label{margin:12px}</style>
+<h1>XcloudVR: local scene experiment</h1>
+<p>Browser-only simulation. No remote server, game streaming or headset support.</p>
+<button id="toggle">Pause / resume cube</button>
+<label>Simulated scene delay <select id="delay"><option>0</option><option>50</option><option>100</option></select> ms</label>
+<p>Move the pointer over the canvas to change the local view.</p>
+<canvas id="scene" width="800" height="450" aria-label="Wireframe cube scene"></canvas>
+<p id="status" role="status">Starting…</p>
+<script type="module" src="/desktop.mjs"></script></html>

@@ -5,7 +5,7 @@ Requires Node.js 20 or later. No packages or services are needed.
 
 Run from repository root:
 
-    node --test prototype/snapshot.test.mjs prototype/scene.test.mjs prototype/input.test.mjs prototype/transport.test.mjs prototype/delay.test.mjs
+    node --test prototype/snapshot.test.mjs prototype/scene.test.mjs prototype/input.test.mjs prototype/transport.test.mjs prototype/delay.test.mjs prototype/desktop.test.mjs
     node prototype/simulate.mjs
 
 snapshot.mjs validates full JSON snapshots and maintains the latest scene.
@@ -77,3 +77,23 @@ reproducibility, bounded queues, disconnect clearing and receiver integration.
 This is application delivery simulation, not TCP packet loss or WAN emulation.
 It does not schedule or delay local rendering. Browser adapter, visible desktop
 scene and hardware tests remain pending.
+
+## Desktop scene page — 2026-10-21
+
+From the repository root run:
+
+    node prototype/serve.mjs
+
+Open the printed 127.0.0.1 URL manually. Stop with Ctrl+C. This server serves
+only the allowlisted demo assets and binds only to loopback. No dependencies.
+The page draws an identity-rotation wireframe cube, supports local pointer yaw,
+pause/resume, and 0/50/100 ms scene-delivery delay. Status shows snapshot sequence,
+stale state and simulated action response. SceneAuthority runs INSIDE the browser;
+this is not a remote scene server or a WebSocket integration. This code is an
+experimental review branch, not a published playable release.
+
+Validation: 26 Node tests passed; projection and static HTTP routes checked;
+desktop.mjs syntax checked. Actual browser visual appearance, pointer/button
+behavior, frame timing and headset operation have NOT been verified. No graphical
+control was used. Next: manual browser QA when allowed, then remote browser
+transport integration. Original prototype code is MIT licensed.
