@@ -97,3 +97,22 @@ desktop.mjs syntax checked. Actual browser visual appearance, pointer/button
 behavior, frame timing and headset operation have NOT been verified. No graphical
 control was used. Next: manual browser QA when allowed, then remote browser
 transport integration. Original prototype code is MIT licensed.
+
+## Server-side HTTP scene — verified 2026-10-22
+
+This section supersedes the browser-only architecture described above. The same
+serve.mjs command now hosts SceneAuthority in Node. The browser connects through
+POST /api/connect, polls GET /api/snapshot without overlapping requests, and sends
+POST /api/input. A new connection invalidates the previous token. Failures stop
+the client with a reload instruction; unknown inputs are never replayed.
+
+This remains a loopback-only, single-client experiment using ordinary HTTP polling,
+not WebSocket or a cloud service. Requests must use the printed 127.0.0.1 host.
+Custom client headers and same-origin checks protect the local experimental API;
+no production authentication or TLS is provided. Do not expose/forward the port.
+
+All 27 tests passed on Node v24.19.0, including real HTTP snapshots, input
+deduplication/acknowledgment, oversized/malformed requests and superseded clients.
+Browser script syntax checked. Actual browser visuals/interactions and headset
+behavior remain unverified. No graphical control used or persistent service left
+running. HTTP polling frequency is not a guaranteed display/scene frame rate.
