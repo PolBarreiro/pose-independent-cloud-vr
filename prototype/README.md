@@ -5,7 +5,7 @@ Requires Node.js 20 or later. No packages or services are needed.
 
 Run from repository root:
 
-    node --test prototype/snapshot.test.mjs prototype/scene.test.mjs prototype/input.test.mjs prototype/transport.test.mjs prototype/delay.test.mjs prototype/desktop.test.mjs
+    node --test prototype/snapshot.test.mjs prototype/scene.test.mjs prototype/input.test.mjs prototype/transport.test.mjs prototype/delay.test.mjs prototype/desktop.test.mjs prototype/client.test.mjs
     node prototype/simulate.mjs
 
 snapshot.mjs validates full JSON snapshots and maintains the latest scene.
@@ -116,3 +116,15 @@ deduplication/acknowledgment, oversized/malformed requests and superseded client
 Browser script syntax checked. Actual browser visuals/interactions and headset
 behavior remain unverified. No graphical control used or persistent service left
 running. HTTP polling frequency is not a guaranteed display/scene frame rate.
+
+## Client failure regression — verified 2026-10-23
+
+Malformed snapshot handling previously sampled a later clock inside fail() and
+then resumed the frame with its earlier timestamp. InputTracker rejected that
+time reversal, stopping the render loop. Failure handling now shares the current
+frame time; stopped clients also refuse action clicks. A Node DOM/clock harness
+reproduced the old failure (Invalid monotonic time), then passed with the fix.
+
+All 28 tests pass. The harness checks disconnect status, a disabled action,
+continued frame scheduling and no action request after failure. It is not an
+actual browser/visual test; those checks and headset support remain pending.

@@ -16,14 +16,13 @@ canvas.onpointermove = event => {
   const rect = canvas.getBoundingClientRect();
   yaw = ((event.clientX - rect.left) / rect.width - .5) * .8;
 };
-function fail(error) {
+function fail(error, now = performance.now() - started) {
   stopped = true; networkError = String(error.message ?? error);
-  const now = performance.now() - started;
   queue.clear(); receiver.disconnect(rg); input.disconnect(now);
 }
 button.onclick = async () => {
   const now = performance.now() - started;
-  if (!input.status(now).canSend) return;
+  if (stopped || !input.status(now).canSend) return;
   try {
     const response = await fetch('/api/input', { method: 'POST', headers: { 'X-Scene-Token': token }, body: input.send(now), signal: AbortSignal.timeout(3000) });
     if (!response.ok) throw new Error(`Input HTTP ${response.status}`);
@@ -52,8 +51,8 @@ function render() {
   for (const item of queue.drain(now)) {
     let result;
     try { result = receiver.receive(item.text, rg, now); }
-    catch (error) { fail(error); break; }
-    if (result === 'reconnect-required') { fail(new Error('Session changed; reload to reconnect')); break; }
+    catch (error) { fail(error, now); break; }
+    if (result === 'reconnect-required') { fail(new Error('Session changed; reload to reconnect'), now); break; }
     if (result !== 'applied') continue;
     const scene = receiver.view(now).scene;
     if (!baseline) { input.connect(scene.session, now); baseline = true; }
