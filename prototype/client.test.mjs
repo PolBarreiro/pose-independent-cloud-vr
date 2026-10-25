@@ -5,7 +5,7 @@ import { setImmediate } from 'node:timers/promises';
 
 test('malformed snapshot displays disconnect and keeps render loop alive', async t => {
   // Node-only DOM/clock harness: no browser or graphical control is involved.
-  const frames = [], handlers = {}, calls = [];
+  const frames = [], handlers = {}, calls = [], signals = [];
   const button = {}, status = {}, delay = {};
   const ctx = { clearRect() {}, beginPath() {}, stroke() {}, moveTo() {}, lineTo() {} };
   const canvas = { width: 800, height: 450, getContext: () => ctx };
@@ -28,8 +28,9 @@ test('malformed snapshot displays disconnect and keeps render loop alive', async
   let clock = 100;
   t.mock.method(performance, 'now', () => ++clock);
   t.mock.method(globalThis, 'setTimeout', () => 0); // no polling timer escapes the harness
-  t.mock.method(globalThis, 'fetch', async path => {
+  t.mock.method(globalThis, 'fetch', async (path, options) => {
     calls.push(path);
+    signals.push(options.signal);
     return path === '/api/connect'
       ? { ok: true, json: async () => ({ token: 'test' }) }
       : { ok: true, text: async () => '{' };
@@ -45,4 +46,11 @@ test('malformed snapshot displays disconnect and keeps render loop alive', async
   await button.onclick();
   assert.equal(calls.length, 2); // failure cannot send or replay an action
   handlers.pagehide();
+  assert.ok(signals.every(signal => signal.aborted));
+  const lastStatus = status.textContent;
+  frames.shift()();
+  assert.equal(frames.length, 0); // no rendering or UI mutation after page disposal
+  assert.equal(status.textContent, lastStatus);
+  await button.onclick();
+  assert.equal(calls.length, 2);
 });

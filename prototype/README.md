@@ -128,3 +128,11 @@ reproduced the old failure (Invalid monotonic time), then passed with the fix.
 All 28 tests pass. The harness checks disconnect status, a disabled action,
 continued frame scheduling and no action request after failure. It is not an
 actual browser/visual test; those checks and headset support remain pending.
+
+## Page disposal — verified 2026-10-25
+
+Leaving the page now aborts HTTP requests, clears delayed snapshots, disconnects
+input/receiver state and stops future render scheduling. The Node harness checks
+that request signals abort and no UI updates or input requests happen afterward.
+All 28 tests passed. This is logical lifecycle coverage, not browser visual QA.
+A page restored from browser history may need a manual reload to reconnect.

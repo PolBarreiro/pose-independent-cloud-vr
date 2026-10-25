@@ -8,6 +8,9 @@ const status = document.querySelector('#status'), button = document.querySelecto
 const receiver = new SnapshotReceiver(), rg = receiver.connect(), input = new InputTracker();
 let queue = new SnapshotDelay(), yaw = 0, baseline = false, responseMs = null;
 let token = null, stopped = false, networkError = '';
+let disposed = false;
+const lifecycle = new AbortController();
+const requestSignal = () => AbortSignal.any([lifecycle.signal, AbortSignal.timeout(3000)]);
 const started = performance.now();
 document.querySelector('#delay').onchange = event => {
   queue.clear(); queue = new SnapshotDelay({ delayMs: Number(event.target.value) });
@@ -17,6 +20,7 @@ canvas.onpointermove = event => {
   yaw = ((event.clientX - rect.left) / rect.width - .5) * .8;
 };
 function fail(error, now = performance.now() - started) {
+  if (disposed) return;
   stopped = true; networkError = String(error.message ?? error);
   queue.clear(); receiver.disconnect(rg); input.disconnect(now);
 }
@@ -24,14 +28,14 @@ button.onclick = async () => {
   const now = performance.now() - started;
   if (stopped || !input.status(now).canSend) return;
   try {
-    const response = await fetch('/api/input', { method: 'POST', headers: { 'X-Scene-Token': token }, body: input.send(now), signal: AbortSignal.timeout(3000) });
+    const response = await fetch('/api/input', { method: 'POST', headers: { 'X-Scene-Token': token }, body: input.send(now), signal: requestSignal() });
     if (!response.ok) throw new Error(`Input HTTP ${response.status}`);
   } catch (error) { fail(error); }
 };
 async function poll() {
   if (stopped) return;
   try {
-    const response = await fetch('/api/snapshot', { headers: { 'X-Scene-Token': token }, signal: AbortSignal.timeout(3000) });
+    const response = await fetch('/api/snapshot', { headers: { 'X-Scene-Token': token }, signal: requestSignal() });
     if (!response.ok) throw new Error(`Snapshot HTTP ${response.status}`);
     const text = await response.text();
     if (!stopped) queue.enqueue(text, performance.now() - started);
@@ -40,13 +44,14 @@ async function poll() {
 }
 async function connect() {
   try {
-    const response = await fetch('/api/connect', { method: 'POST', headers: { 'X-Scene-Client': 'desktop' }, signal: AbortSignal.timeout(3000) });
+    const response = await fetch('/api/connect', { method: 'POST', headers: { 'X-Scene-Client': 'desktop' }, signal: requestSignal() });
     if (!response.ok) throw new Error(`Connect HTTP ${response.status}`);
     token = (await response.json()).token;
     if (!stopped) poll();
   } catch (error) { fail(error); }
 }
 function render() {
+  if (disposed) return;
   const now = performance.now() - started;
   for (const item of queue.drain(now)) {
     let result;
@@ -67,4 +72,10 @@ function render() {
 }
 requestAnimationFrame(render);
 connect();
-addEventListener('pagehide', () => { stopped = true; }, { once: true });
+addEventListener('pagehide', () => {
+  disposed = true; stopped = true;
+  lifecycle.abort(); queue.clear();
+  const now = performance.now() - started;
+  receiver.disconnect(rg); input.disconnect(now);
+  button.disabled = true;
+}, { once: true });
