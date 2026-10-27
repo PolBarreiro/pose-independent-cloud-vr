@@ -5,7 +5,7 @@ Requires Node.js 20 or later. No packages or services are needed.
 
 Run from repository root:
 
-    node --test prototype/snapshot.test.mjs prototype/scene.test.mjs prototype/input.test.mjs prototype/transport.test.mjs prototype/delay.test.mjs prototype/desktop.test.mjs prototype/client.test.mjs
+    node --test prototype/snapshot.test.mjs prototype/scene.test.mjs prototype/input.test.mjs prototype/transport.test.mjs prototype/delay.test.mjs prototype/desktop.test.mjs prototype/client.test.mjs prototype/metrics.test.mjs
     node prototype/simulate.mjs
 
 snapshot.mjs validates full JSON snapshots and maintains the latest scene.
@@ -136,3 +136,18 @@ input/receiver state and stops future render scheduling. The Node harness checks
 that request signals abort and no UI updates or input requests happen afterward.
 All 28 tests passed. This is logical lifecycle coverage, not browser visual QA.
 A page restored from browser history may need a manual reload to reconnect.
+
+## Software metrics — verified 2026-10-27
+
+SceneMetrics records frame callback intervals, snapshot receive-to-apply delay,
+action acknowledgment duration and UTF-8 snapshot payload bytes separately.
+Each distribution retains at most 6000 recent samples and reports nearest-rank
+p50/p95/p99 plus sample count. Payload rate averages since page load and excludes
+HTTP/TCP overhead; it is not total link bandwidth. No warm-up exclusion yet.
+The page status displays frame-interval p95 and average payload B/s. Empty
+distributions return null; hardware motion-to-photon and world-state age remain
+explicitly unmeasured. No cross-clock server/client subtraction is performed.
+
+All 30 Node tests passed, including exact percentile values, bounded samples
+and multibyte payload accounting. These are instrumentation tests, not collected
+headset/browser performance results. Visual verification remains pending.

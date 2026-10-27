@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 import { randomUUID } from 'node:crypto';
 import { SceneAuthority } from './scene.mjs';
-const files = new Set(['desktop.html', 'desktop.mjs', 'draw.mjs', 'scene.mjs', 'snapshot.mjs', 'delay.mjs', 'input.mjs']);
+const files = new Set(['desktop.html', 'desktop.mjs', 'draw.mjs', 'scene.mjs', 'snapshot.mjs', 'delay.mjs', 'input.mjs', 'metrics.mjs']);
 export function createDesktopServer() {
   const authority = new SceneAuthority(randomUUID()), started = performance.now();
   let token = null, generation = null;

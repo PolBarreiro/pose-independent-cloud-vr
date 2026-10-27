@@ -3,6 +3,8 @@ import { SnapshotReceiver } from './snapshot.mjs';
 import { SnapshotDelay } from './delay.mjs';
 import { InputTracker } from './input.mjs';
 import { drawScene } from './draw.mjs';
+import { SceneMetrics } from './metrics.mjs';
+const metrics = new SceneMetrics();
 const canvas = document.querySelector('#scene'), ctx = canvas.getContext('2d');
 const status = document.querySelector('#status'), button = document.querySelector('#toggle');
 const receiver = new SnapshotReceiver(), rg = receiver.connect(), input = new InputTracker();
@@ -38,7 +40,7 @@ async function poll() {
     const response = await fetch('/api/snapshot', { headers: { 'X-Scene-Token': token }, signal: requestSignal() });
     if (!response.ok) throw new Error(`Snapshot HTTP ${response.status}`);
     const text = await response.text();
-    if (!stopped) queue.enqueue(text, performance.now() - started);
+    if (!stopped) { metrics.received(text); queue.enqueue(text, performance.now() - started); }
   } catch (error) { fail(error); }
   if (!stopped) setTimeout(poll, 1000 / 30);
 }
@@ -53,21 +55,27 @@ async function connect() {
 function render() {
   if (disposed) return;
   const now = performance.now() - started;
+  metrics.frame(now);
   for (const item of queue.drain(now)) {
     let result;
     try { result = receiver.receive(item.text, rg, now); }
     catch (error) { fail(error, now); break; }
     if (result === 'reconnect-required') { fail(new Error('Session changed; reload to reconnect'), now); break; }
     if (result !== 'applied') continue;
+    metrics.applied(item.deliveryDelayMs);
     const scene = receiver.view(now).scene;
     if (!baseline) { input.connect(scene.session, now); baseline = true; }
     const response = input.acknowledge(scene, now);
-    if (response !== null) responseMs = response;
+    if (response !== null) { responseMs = response; metrics.response(response); }
   }
   const view = receiver.view(now), state = input.status(now);
   drawScene(ctx, view.scene, canvas.width, canvas.height, yaw);
   button.disabled = !state.canSend;
   status.textContent = networkError ? `Disconnected: ${networkError}. Reload to reconnect; actions are not replayed.` : `Local HTTP scene • sequence ${view.scene?.sequence ?? 'waiting'} • ${view.stale ? 'stale / waiting' : 'current'} • action ${state.outcomeUnknown ? 'outcome unknown' : state.pending ? 'pending' : 'ready'} • last application response ${responseMs === null ? '—' : responseMs.toFixed(1) + ' ms'}`;
+  if (!networkError) {
+    const report = metrics.report(now);
+    status.textContent += ` • frame interval p95 ${report.frameIntervalMs.p95?.toFixed(1) ?? '—'} ms • payload ${(report.payloadBytesPerSecond ?? 0).toFixed(0)} B/s (since load; excludes HTTP overhead)`;
+  }
   requestAnimationFrame(render);
 }
 requestAnimationFrame(render);
