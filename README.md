@@ -1,5 +1,7 @@
 # Pose-Independent Cloud VR
 
+> **Discontinued — 28 October 2026.** Pol has ended this project because he considers the original need covered by available cloud VR solutions. Development, contributor recruitment, NVIDIA/community outreach and daily reminders have stopped. This repository is retained as a historical proposal; its experimental prototype was not validated as a playable headset release. [Closed prototype PR #2](https://github.com/PolBarreiro/pose-independent-cloud-vr/pull/2) preserves the code and test history.
+
 **Making native VR cloud gaming comfortable at datacenter distances by streaming a full 360° world representation per frame, and letting the headset render the view locally.**
 
 [![License: CC BY-NC-ND 4.0](https://img.shields.io/badge/License-CC%20BY--NC--ND%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-nd/4.0/)
@@ -50,11 +52,11 @@ See **[Community help wanted: first measurable prototype](https://github.com/Pol
 3. Measure render frame times, bandwidth, world-update age and interaction latency separately under controlled delay and jitter.
 4. Publish reproducible instructions and results, then test on actual headsets before making comfort or motion-to-photon claims.
 
-Help is welcome with WebXR/OpenXR clients, streaming and codecs, dynamic Gaussian scenes, or headset testing. Start by commenting on the linked issue with a concrete task, concern or relevant prior work. [ALVR](https://github.com/alvr-org/ALVR) and the [official WebXR samples](https://immersive-web.github.io/webxr-samples/) are useful starting points to investigate; no participation or endorsement is implied.
+Contributor recruitment has ended. The linked issue is closed; the following references remain for historical context. [ALVR](https://github.com/alvr-org/ALVR) and the [official WebXR samples](https://immersive-web.github.io/webxr-samples/) are useful starting points to investigate; no participation or endorsement is implied.
 
 ### Daily progress and feedback
 
-A daily project task is scheduled for 10:00 Asia/Bangkok to check feedback and attempt one small, verifiable development, research or community step. Meaningful progress and blockers should be recorded on GitHub. Outreach will use relevant community channels and respect their rules; it will not repeatedly message people who do not respond. A useful NVIDIA reply informs the work rather than ending the prototype effort.
+The daily project task was disabled on 28 October 2026 at Pol's request. No further development, outreach, reply monitoring or project reminders are planned. Earlier goals and the verbatim request above are preserved as historical context.
 
 The README and proposal documentation retain CC BY-NC-ND 4.0. On 14 October 2026, Pol authorized MIT for the prototype implementation; see the scope below.
 
